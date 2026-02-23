@@ -618,22 +618,6 @@ function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
-      >
-        <span className="font-hand text-white/30 text-sm">scorri</span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-1.5"
-        >
-          <div className="w-1 h-1.5 bg-white/40 rounded-full" />
-        </motion.div>
-      </motion.div>
     </section>
   )
 }
