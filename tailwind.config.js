@@ -34,14 +34,11 @@ export default {
           400: '#D4BC7E',
           500: '#C2A355',
         },
-        antracite: {
-          700: '#2D2D2D',
-          800: '#1F1F1F',
-          900: '#141414',
-        },
       },
       fontFamily: {
         heading: ['Poppins', 'sans-serif'],
+        hand: ['Caveat', 'cursive'],
+        round: ['Fredoka', 'sans-serif'],
         sans: ['Open Sans', 'sans-serif'],
       },
     },
