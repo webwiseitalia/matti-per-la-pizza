@@ -29,6 +29,7 @@
 .bg-paper {
   background-color: #FFFDF7;
   background-image:
+    url('./assets/texture-cream-paper.png'),
     radial-gradient(ellipse at 20% 50%, rgba(196, 30, 30, 0.03) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(245, 230, 200, 0.4) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 80%, rgba(240, 228, 201, 0.3) 0%, transparent 50%);
@@ -37,8 +38,17 @@
 .bg-paper-warm {
   background-color: #FAF3E6;
   background-image:
+    url('./assets/texture-felt.png'),
     radial-gradient(ellipse at 30% 30%, rgba(196, 30, 30, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 70%, rgba(210, 190, 140, 0.2) 0%, transparent 50%);
+}
+
+/* ───────── TEXTURE OVERLAYS ───────── */
+
+/* Muro scuro — per footer e sezioni dark */
+.texture-darkwall {
+  background-image: url('./assets/texture-dark-wall.png');
+  background-repeat: repeat;
 }
 
 /* ───────── HAND-DRAWN BORDERS ───────── */

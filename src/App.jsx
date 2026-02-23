@@ -456,126 +456,184 @@ function Navbar() {
 function Hero() {
   const heroRef = useRef(null)
   const titleRef = useRef(null)
-  const imgRef = useRef(null)
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(imgRef.current, { scale: 1.2, duration: 2, ease: 'power3.out' })
-      gsap.to(imgRef.current, {
-        yPercent: 15,
-        ease: 'none',
-        scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1.5 },
-      })
-    }, heroRef)
-    return () => ctx.revert()
-  }, [])
+  /* Asymmetric photo grid — 6 cols × 5 rows, each photo has unique size/position */
+  const heroGrid = [
+    { src: foto5,  area: '1 / 1 / 3 / 3',   rotate: -1.5 },   /* big — top-left, 2×2 */
+    { src: foto6,  area: '1 / 3 / 2 / 5',   rotate: 0.8 },    /* wide — top-mid, 1×2 */
+    { src: foto9,  area: '1 / 5 / 2 / 6',   rotate: -0.5 },   /* small — top-right */
+    { src: foto14, area: '1 / 6 / 3 / 7',   rotate: 1.2 },    /* tall — right, 2×1 */
+    { src: foto3,  area: '2 / 3 / 3 / 4',   rotate: -0.8 },   /* small */
+    { src: foto8,  area: '2 / 4 / 3 / 6',   rotate: 0.5 },    /* wide — mid, 1×2 */
+    { src: foto16, area: '3 / 1 / 4 / 2',   rotate: 1 },      /* small — left */
+    { src: foto17, area: '3 / 2 / 5 / 4',   rotate: -0.6 },   /* big — center-bot, 2×2 */
+    { src: foto4,  area: '3 / 4 / 4 / 5',   rotate: 0.9 },    /* small */
+    { src: foto11, area: '3 / 5 / 4 / 7',   rotate: -1.1 },   /* wide — right, 1×2 */
+    { src: foto18, area: '4 / 1 / 5 / 2',   rotate: 0.7 },    /* small — bottom-left */
+    { src: foto1,  area: '4 / 4 / 5 / 6',   rotate: -0.4 },   /* wide — bottom, 1×2 */
+    { src: foto12, area: '4 / 6 / 5 / 7',   rotate: 1.3 },    /* small — bottom-right */
+    { src: foto7,  area: '5 / 1 / 6 / 3',   rotate: -0.3 },   /* wide — bottom-left, 1×2 */
+    { src: foto2,  area: '5 / 3 / 6 / 5',   rotate: 0.6 },    /* wide — bottom-mid, 1×2 */
+    { src: foto10, area: '5 / 5 / 6 / 7',   rotate: -0.9 },   /* wide — bottom-right, 1×2 */
+  ]
 
   useLayoutEffect(() => {
     if (!titleRef.current) return
     const split = new SplitType(titleRef.current, { types: 'chars' })
     const ctx = gsap.context(() => {
-      gsap.from(split.chars, { y: 100, rotateX: -80, opacity: 0, stagger: 0.03, duration: 1.2, ease: 'power4.out', delay: 0.3 })
+      gsap.from(split.chars, { y: 80, rotateX: -60, opacity: 0, stagger: 0.03, duration: 1.2, ease: 'power4.out', delay: 0.6 })
     })
     return () => { ctx.revert(); split.revert() }
   }, [])
 
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.hero-grid-img', {
+        scale: 1.15, opacity: 0, duration: 1.2, ease: 'power2.out', stagger: { amount: 0.8, from: 'random' },
+      })
+    }, heroRef)
+    return () => ctx.revert()
+  }, [])
+
   return (
     <section ref={heroRef} className="relative h-[100svh] overflow-hidden">
-      <div className="absolute inset-0">
-        <img ref={imgRef} src={foto5} alt="Pizza artigianale" className="w-full h-full object-cover will-change-transform" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30" />
+      {/* Asymmetric photo mosaic background */}
+      <div className="absolute inset-0 bg-[#2D2D2D] grid gap-1 md:gap-1.5 p-1 md:p-1.5" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(5, 1fr)' }}>
+        {heroGrid.map((photo, i) => (
+          <div
+            key={i}
+            className="hero-grid-img overflow-hidden relative rounded-sm"
+            style={{ gridArea: photo.area, transform: `rotate(${photo.rotate}deg)` }}
+          >
+            <img src={photo.src} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+          </div>
+        ))}
       </div>
 
-      <div className="relative z-10 h-full flex flex-col justify-end px-5 md:px-10 lg:px-14 pb-14 md:pb-20">
-        {/* Logo — like a stamp, tilted */}
+      {/* Gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+
+      {/* Doodle decorations */}
+      <DoodleStar className="absolute top-[15%] right-[12%] w-10 h-10 text-white opacity-15 rotate-12 hidden md:block z-10" />
+      <DoodleStar className="absolute bottom-[20%] left-[8%] w-7 h-7 text-[#FFF3D1] opacity-20 -rotate-6 hidden md:block z-10" />
+      <DoodleCircle className="absolute top-[55%] right-[18%] w-16 h-16 text-white opacity-10 rotate-45 hidden lg:block z-10" />
+
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-5 md:px-10">
+        {/* Logo — stamp effect */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.6, rotate: -15 }}
-          animate={{ opacity: 1, scale: 1, rotate: -6 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="absolute top-24 right-5 md:right-14 lg:right-20"
+          initial={{ opacity: 0, scale: 0.4, rotate: -20 }}
+          animate={{ opacity: 1, scale: 1, rotate: -5 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          className="mb-6 md:mb-8"
         >
-          <div className="relative">
-            <img src={logo} alt="Logo" className="w-24 md:w-36 lg:w-44 drop-shadow-2xl" />
-            {/* Handwritten annotation */}
-            <span className="absolute -bottom-6 -left-4 font-hand text-white text-lg md:text-xl rotate-[-8deg] whitespace-nowrap">
+          <div className="relative inline-block">
+            <img src={logo} alt="Matti per la Pizza" className="w-24 md:w-36 lg:w-40 drop-shadow-2xl" />
+            <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 font-hand text-white/60 text-base md:text-lg rotate-[-4deg] whitespace-nowrap">
               dal 2018!
             </span>
           </div>
         </motion.div>
 
-        <div className="max-w-[90vw] md:max-w-[70vw]">
-          {/* Handwritten top line */}
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-hand text-[#FFF3D1] text-xl md:text-2xl mb-3 md:mb-4"
-          >
-            Pizzeria d'asporto a Pisogne
-          </motion.p>
+        {/* Handwritten subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="font-hand text-[#FFF3D1] text-xl md:text-2xl lg:text-3xl mb-3 md:mb-4"
+          style={{ transform: 'rotate(-1.5deg)' }}
+        >
+          Pizzeria d'asporto a Pisogne
+        </motion.p>
 
-          <h1
-            ref={titleRef}
-            className="hero-title font-round font-bold text-white leading-[0.95] mb-6 md:mb-8"
-            style={{ fontSize: 'clamp(3.2rem, 10vw, 8rem)', perspective: '800px' }}
-          >
-            Matti per<br />la Pizza
-          </h1>
+        {/* Main title */}
+        <h1
+          ref={titleRef}
+          className="hero-title font-round font-bold text-white leading-[0.92] mb-3 md:mb-5"
+          style={{ fontSize: 'clamp(3.5rem, 12vw, 9rem)', perspective: '800px' }}
+        >
+          Matti per<br />la Pizza
+        </h1>
+        <DoodleUnderline className="w-48 md:w-72 h-3 text-[#C41E1E] opacity-70 mb-6 md:mb-8" />
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="text-white/70 text-base md:text-lg max-w-md leading-relaxed mb-8"
-          >
-            Farine non raffinate. Ingredienti italiani. Passione artigianale.
-          </motion.p>
+        {/* Description */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.1 }}
+          className="text-white/60 text-base md:text-lg max-w-lg leading-relaxed mb-8 md:mb-10"
+        >
+          Farine non raffinate e integrali, ingredienti 100% italiani.
+          <br />
+          <strong className="text-white/90">La pizza come dovrebbe essere. Sempre.</strong>
+        </motion.p>
 
-          {/* CTAs with hand-drawn borders */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.3 }}
-            className="flex flex-wrap gap-3 md:gap-4"
+        {/* CTA buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.4 }}
+          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-10"
+        >
+          <a
+            href="https://wa.me/393476737328?text=Ciao!%20Vorrei%20ordinare%20una%20pizza"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sketch-border-red bg-[#C41E1E] text-white px-7 md:px-9 py-4 font-round font-bold text-base md:text-lg hover:bg-[#8B1515] transition-colors flex items-center gap-3"
           >
-            <a
-              href="https://wa.me/393476737328?text=Ciao!%20Vorrei%20ordinare%20una%20pizza"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sketch-border-red bg-[#C41E1E] text-white px-7 md:px-9 py-4 font-round font-bold text-base md:text-lg hover:bg-[#8B1515] transition-colors flex items-center gap-3"
-            >
-              <WhatsAppIcon className="w-5 h-5" />
-              Ordina ora!
-            </a>
-            <a
-              href="#menu"
-              className="sketch-border bg-transparent text-white px-7 md:px-9 py-4 font-round font-bold text-base md:text-lg hover:bg-white/10 transition-colors flex items-center gap-2 border-white"
-              style={{ borderColor: 'rgba(255,255,255,0.5)' }}
-            >
-              Scopri il Menu
-              <DoodleArrow className="w-8 h-5 text-white" />
-            </a>
-          </motion.div>
-        </div>
+            <WhatsAppIcon className="w-5 h-5" />
+            Ordina ora!
+          </a>
+          <a
+            href="#menu"
+            className="sketch-border text-white px-7 md:px-9 py-4 font-round font-bold text-base md:text-lg hover:bg-white/10 transition-colors flex items-center gap-2"
+            style={{ borderColor: 'rgba(255,255,255,0.4)' }}
+          >
+            Scopri il Menu
+            <DoodleArrow className="w-8 h-5 text-white" />
+          </a>
+        </motion.div>
 
-        {/* Badges — handwritten style */}
+        {/* Badge tags */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.8 }}
-          className="absolute bottom-14 right-5 md:right-14 hidden md:flex flex-col items-end gap-2"
+          className="flex flex-wrap justify-center gap-2.5"
         >
           {[
-            { icon: <WheatIcon className="w-4 h-4 inline-block" />, text: 'Farine non raffinate' },
-            { icon: <ItalyFlagIcon className="w-4 h-4 inline-block" />, text: '100% Made in Italy' },
-            { icon: <DoodleStar className="w-4 h-4 inline-block" />, text: '4.8/5 Google' },
+            { icon: <WheatIcon className="w-4 h-4" />, text: 'Farine non raffinate' },
+            { icon: <ItalyFlagIcon className="w-4 h-4" />, text: '100% Italiano' },
+            { icon: <DoodleStar className="w-4 h-4" />, text: '4.8/5 Google' },
           ].map((item, i) => (
-            <span key={i} className="font-hand text-white/60 text-base flex items-center gap-1.5" style={{ transform: `rotate(${-2 + i}deg)` }}>
+            <span
+              key={i}
+              className="sketch-border-light bg-white/10 backdrop-blur-sm px-3 py-1.5 flex items-center gap-1.5 font-hand text-sm text-white/50"
+              style={{ transform: `rotate(${[-1, 0.5, -0.8][i]}deg)`, borderColor: 'rgba(255,255,255,0.15)' }}
+            >
               {item.icon} {item.text}
             </span>
           ))}
         </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.2, duration: 0.6 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+      >
+        <span className="font-hand text-white/30 text-sm">scorri</span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-1.5"
+        >
+          <div className="w-1 h-1.5 bg-white/40 rounded-full" />
+        </motion.div>
+      </motion.div>
     </section>
   )
 }
@@ -1184,7 +1242,7 @@ function DoveSiamo() {
 
 function Footer() {
   return (
-    <footer className="bg-[#2D2D2D] text-white relative overflow-hidden">
+    <footer className="bg-[#2D2D2D] text-white texture-darkwall relative overflow-hidden">
       {/* Doodle top edge */}
       <div className="doodle-divider opacity-20" />
 
